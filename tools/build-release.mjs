@@ -85,6 +85,15 @@ const DATA = path.join(OUT, "data");
 for (const d of ["sessions", "storages", "skills", "personas", "attachments", "profiles/headless"]) {
   fs.mkdirSync(path.join(DATA, d), { recursive: true });
 }
+// 清掉可能顺带过来的本机身份/凭据残留：
+// .anonymous-user-id 是内核首次运行时用 randomUUID 自动生成的（getOrCreateAnonymousUserId），
+// 带上就等于所有下载者共用一个固定 id；其余是密钥类文件，发布物里绝不该有。
+for (const [dir, f] of [
+  [DATA, ".anonymous-user-id"], [DATA, ".env"], [DATA, "vault.enc"], [DATA, "lock.json"], [DATA, "key.txt"],
+  [OUT, "key.txt"], [OUT, "vault.enc"],
+]) {
+  try { fs.unlinkSync(path.join(dir, f)); } catch {}
+}
 fs.writeFileSync(path.join(DATA, "skills", "README.txt"),
   "把带 SKILL.md 的技能目录平铺放进这里，重启界面即生效。\r\n", "utf8");
 fs.writeFileSync(path.join(DATA, "personas", "README.txt"),
