@@ -37,7 +37,7 @@ const THEME = tuiMod.C; // 当前配色主题（断言按它解析，不写死�
 
 const ROWS = 44;
 const COLS = 110;
-const VERSION = "0.16.14";
+const VERSION = "0.17.1";
 
 const captured = [];
 class FakeOut extends PassThrough {
@@ -94,7 +94,7 @@ await sleep(400);
 check("启动帧渲染欢迎面板（可用工具/可用技能/汇总行）", all().includes("可用工具") && all().includes("可用技能") && all().includes("/help 查看命令"));
 check("版本行 v + stable · local", all().includes(`v${VERSION}`) && all().includes("stable") && all().includes("local"));
 check("大字 logo（NOVA-AGENT 描边字）", all().includes("███╗"));
-check("USB 接头标志（hero 左栏：机身整行 █×14 连续无断）", all().includes("█".repeat(14)));
+check("年兽像素标志（hero 左栏：▀ 半格 ≥16 行，替代旧 USB 接头）", (all().split("\r\n").filter((l) => l.includes("▀")).length) >= 16);
 
 // --- 2. 帧不变量：每帧行数 ≤ rows-1 ---
 {

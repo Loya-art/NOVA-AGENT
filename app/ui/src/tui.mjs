@@ -55,7 +55,7 @@ const PERSONA_DIR = path.join(DSH_HOME, "personas");
 const PERSONA_OVERRIDE = path.join(DSH_HOME, "profiles", "headless", "persona-override.yml");
 const SESSIONS_ROOT = path.join(DSH_HOME, "sessions");
 const PROJCACHE_ROOT = path.join(DSH_HOME, "storages", "session_projcache", "sessions");
-const VERSION = "0.17.0";
+const VERSION = "0.17.1";
 const CONTEXT_WINDOW = 1048576;
 const BELL_AFTER_MS = 10000;
 const APP_TITLE = "NOVA Agent";
@@ -820,29 +820,94 @@ export function start({ stdin, stdout, rows, cols }) {
     S.scroll = 0; // 列宽变了，视口重置到跟随底部
   }
   // ---- 欢迎屏（Hermes SessionPanel 制式，整屏自绘版）----
-  // USB 接头标志（2026-10-13 定稿：白头黑孔 + 主题色机身，无字；v0.16.14 起纯直角无削角）。
-  // 10 行 × 14 列，塞进 hero 左栏预留位（heroRows>=10 才画，矮终端留白）。
-  // 头 = C.text，机身 = C.logo（crimson 即 #FF2D2D），孔 = 透明格露底色。
-  // 只用 █ 一个字形（字体最安全）；全部加粗（同大字：非粗体前景发暗）。
-  const USB_LOGO_W = 14;
-  const usbLogoRows = () => {
-    const g = Array.from({ length: 10 }, () => Array(USB_LOGO_W).fill(null));
-    const put = (r, c0, c1, t) => { for (let c = c0; c <= c1; c++) g[r][c] = t; };
-    for (let r = 0; r <= 4; r++) put(r, 2, 11, "h");       // 头（纯矩形，无削角）
-    g[2][3] = g[2][4] = g[2][9] = g[2][10] = null;         // 两个方孔（露底色）
-    for (let r = 5; r <= 9; r++) put(r, 0, 13, "b");       // 机身（纯矩形，无削角）
-    return g.map((row) => {
+  // 年兽像素标志（2026-11-17 定稿，32×32，assets/icon.svg 同源）。
+  // 终端用半格渲染：每行 "▀" 上半块=前景色(上像素)、背景色=下像素，
+  // 32×32 地图 → 16 行 × 32 列；24×24 降档 → 12 行（矮终端用）。
+  // '.' = 界面底色 C.bg；配色与 ICO 完全一致（含暗金角 G 与亮黄毛球 Y 的区分）。
+  const NIAN_PAL = {
+    Y: "#FFC53D", C: "#2BD9C8", R: "#E23A3A", F: "#FF4646",
+    S: "#FFE8D9", I: "#14100F", W: "#FFFFFF", B: "#FF8A80",
+    G: "#E8A33D", g: "#FFC53D",
+  };
+  const NIAN32 = [
+    "................................",
+    "........GG............GG........",
+    ".......GGG......Y.....GGG.......",
+    "......GGG....Y.YY.Y....GGG......",
+    ".....GGGG...Y.YYYY.....GGGG.....",
+    "....GGGGR....YYYYYY....CGGGG....",
+    "....GGGGRRRR.YYYYYY.CCCCGGGG....",
+    ".....GGGRRR...YYYY.CCCCCGGG.....",
+    ".....GGGGRRRR.IGGIYCCCCGGGG.....",
+    ".....GGGGGRIIIGggGIIICGGGGG.....",
+    "......GGGGIFFGggggGFFIGGGG......",
+    ".....CGGGIFFFGggggGFFFIGGGRR....",
+    "..CCCC..IFFFFFGggGFFFFFIR.RR....",
+    "...CCCCCIFWWWFFFFFFWWWFIRRRRRR..",
+    "..CCCCCIFWWWWWFFFFWWWWWFIRRRRR..",
+    "..CCCCCIFWIIWWFFFFWWIIWFIRRRRRR.",
+    "...CCCCIFWIWIWFFFFWIWIWFIRRRR...",
+    "..C.CCCIFWIIWWFFFFWWIIWFIRRRR...",
+    "....C.CIFFWWWFSSSSFWWWFFI..RR...",
+    ".....YYIFFFFSSSIISSSFFFFIY......",
+    ".....YYYIBBSSSSIISSSSBBIYYYY....",
+    "...YYYYYIBBSSSSSSSSSSBBIYYYY....",
+    "....YYYYYIFFSSSSSSSSFFIYYYYY....",
+    "...YYYYYYYIIFSWIIWSFII.YYYYY....",
+    "....YYYY..RIIIWFFWIIICCYYYY.....",
+    ".....Y.YY.RRRRIIIICCCCCYY.YY....",
+    "........RRRRRRRR.CCCCCCC........",
+    "..........RRRRRRCCCCCC.C........",
+    "..........RRRRRR.CCCCC..........",
+    "...........RRR....CCC.C.........",
+    "..........R.R.......C...........",
+    "................................",
+  ];
+  const NIAN24 = [
+    "........................",
+    "......G..........G......",
+    ".....GG....YYY...GG.....",
+    "....GG...YYYYY....GG....",
+    "...GGGR.RYYYYYYCCCGGG...",
+    "...GGGRRR.YYYYCCCCGGG...",
+    "....GGGRRRIGGICCCGGG....",
+    "....GGGRIFGggGFICGGG....",
+    "...CCGGIFFGggGFFIGGR....",
+    "..CCCCIFFFFGGFFFFI.RRR..",
+    ".CCCCCFWWWFFFFWWWFRRRR..",
+    "..CCCIFIIWWFFWWIIFIRRRR.",
+    "..CCCIFIWIWFFWIWIFIRRRR.",
+    ".....IFWIWFFFFWIWFIR.R..",
+    "...YYIFFFSSIISSFFFI.Y...",
+    "..YYYYIBSSSIISSSBIYYY...",
+    "...YYYIBSSSSSSSSBIYYYY..",
+    "..YYYYYIFSIWWISFIYYYYY..",
+    "....YYY.RIIFFIICC.YYY...",
+    ".....YRRRRRRCCCCCCY.....",
+    "......RRRRRR.CCCC.......",
+    ".......RRRR.CCCCC.......",
+    "........RRR..CCCC.......",
+    "........................",
+  ];
+  const bg = (hex, s) => `\x1b[${BGRGB(hex)}m${s}\x1b[49m`;
+  // 逐行合并同色段输出；整格同色用空格铺底，异色用 ▀ 上半块
+  const nianLogoRows = (map) => {
+    const W = map[0].length;
+    const col = (row, x) => NIAN_PAL[row[x]] || C.bg;
+    const rows = [];
+    for (let y = 0; y + 1 < map.length; y += 2) {
+      const top = map[y], bot = map[y + 1];
       let out = "", i = 0;
-      while (i < row.length) {
-        const k = row[i] == null ? null : row[i][0]; // 同 kind 连成一段
+      while (i < W) {
+        const t = col(top, i), b = col(bot, i);
         let j = i;
-        while (j < row.length && (row[j] == null ? null : row[j][0]) === k) j++;
-        const text = row.slice(i, j).map((c) => (c == null ? " " : "█")).join("");
-        out += k === null ? text : k === "h" ? fg(C.text, text, "1") : fg(C.logo, text, "1");
+        while (j < W && col(top, j) === t && col(bot, j) === b) j++;
+        out += t === b ? bg(t, " ".repeat(j - i)) : bg(b, fg(t, "▀".repeat(j - i), "1"));
         i = j;
       }
-      return out;
-    });
+      rows.push(out);
+    }
+    return rows;
   };
   function pushWelcome() {
     const padL = Math.max(0, Math.floor((S.cols - 86) / 2));
@@ -862,12 +927,15 @@ export function start({ stdin, stdout, rows, cols }) {
     const twoCol = rightW >= 24;
     // 右栏（工具+技能列表 ≈17 行）恒高于左栏，面板总高由右栏决定 ——
     // 因此 ≥30 行即可安全画 10 行标志（面板不会因此变高）；42 行以上额外留白更透气。
-    const heroRows = S.rows >= 42 ? 12 : S.rows >= 30 ? 10 : 2;
+    // 年兽标志两档：≥40 行画满 32×32（16 行），≥30 行画 24×24（12 行），更矮留白。
+    // 档位行数都含左栏 4 行信息，不会把面板撑得比右栏高太多。
+    const heroRows = S.rows >= 40 ? 16 : S.rows >= 30 ? 12 : 2;
 
     const left = [];
-    const logoArt = heroRows >= 10 ? usbLogoRows() : null; // 矮终端不画标志，只留白
+    const logoArt = heroRows >= 16 ? nianLogoRows(NIAN32) : heroRows >= 12 ? nianLogoRows(NIAN24) : null; // 矮终端不画标志，只留白
     if (logoArt) {
-      const pad = Math.max(0, Math.floor((leftW - USB_LOGO_W) / 2));
+      const mapW = heroRows >= 16 ? 32 : 24;
+      const pad = Math.max(0, Math.floor((leftW - mapW) / 2));
       for (const r of logoArt) left.push(" ".repeat(pad) + r);
     } else {
       for (let i = 0; i < heroRows; i++) left.push(""); // logo 预留位
