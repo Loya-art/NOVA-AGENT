@@ -30,9 +30,8 @@ console.log(`== NOVA-Agent v${VERSION} release build ==`);
 console.log("-- building TUI bundle...");
 execSync("node ui/build.mjs", { cwd: path.join(ROOT, "app"), stdio: "inherit" });
 
-// ---- 2. 清空并重建输出目录 ----
+// ---- 2. 组装输出目录（可续跑：不整树删除；node_modules 已在则跳过）----
 console.log("-- assembling release dir...");
-fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 
 // 根部：启动脚本 + 文档 + 图标
@@ -63,9 +62,15 @@ fs.mkdirSync(path.join(OUT, "app", "ui"), { recursive: true });
 copy(path.join(ROOT, "app", "templates"), path.join(OUT, "app", "templates"));
 copy(path.join(ROOT, "app", "ui", "src"), path.join(OUT, "app", "ui", "src"));
 fs.copyFileSync(path.join(ROOT, "app", "ui", "bundle.mjs"), path.join(OUT, "app", "ui", "bundle.mjs"));
-copy(path.join(ROOT, "app", "node_modules"), path.join(OUT, "app", "node_modules"));
+const NM = path.join(OUT, "app", "node_modules");
+if (fs.existsSync(path.join(NM, ".pnpm"))) {
+  console.log("-- app/node_modules already present, skip copy (要强制重拷请删 release/NOVA-Agent)");
+} else {
+  copy(path.join(ROOT, "app", "node_modules"), NM);
+}
 
 // tools：只带用户用得到的
+fs.mkdirSync(path.join(OUT, "tools"), { recursive: true });
 for (const f of ["preflight.mjs", "make-shortcut.ps1", "make-icon.mjs", "make-pixel-icon.mjs", "check-secrets.mjs"]) {
   fs.copyFileSync(path.join(ROOT, "tools", f), path.join(OUT, "tools", f));
 }
@@ -102,6 +107,7 @@ const walk = (dir) => {
     const p = path.join(dir, e.name);
     if (e.isDirectory()) { walk(p); continue; }
     if (e.name.endsWith(".node") || p.includes("node_modules")) continue; // 依赖不扫
+    if (p.endsWith("check-secrets.mjs")) continue; // 扫描器自身含检测模式字符串
     try {
       const t = fs.readFileSync(p, "utf8");
       if (secretRe.test(t)) found.push(path.relative(OUT, p));
