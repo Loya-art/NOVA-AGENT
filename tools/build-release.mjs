@@ -39,7 +39,11 @@ for (const f of ["NOVA-AGENT.bat", "SETUP.bat", "INSTALL-USB.bat", "CHECK.bat", 
   fs.copyFileSync(path.join(ROOT, f), path.join(OUT, f));
 }
 fs.mkdirSync(path.join(OUT, "assets"), { recursive: true });
-for (const f of ["icon.ico", "icon-512.png", "icon.svg", "icon-pixel.svg", "icon-pixel-512.png", "icon-pixel-map.txt"]) {
+// 清掉上一轮残留（图标换版时不同步会双份）
+for (const stale of fs.readdirSync(path.join(OUT, "assets"))) {
+  fs.rmSync(path.join(OUT, "assets", stale), { force: true });
+}
+for (const f of ["icon.ico", "icon-512.png", "icon.svg", "icon-nian32.svg", "icon-nian32-map.txt"]) {
   fs.copyFileSync(path.join(ROOT, "assets", f), path.join(OUT, "assets", f));
 }
 // 文件夹图标（资源管理器里直接显示年兽）
@@ -71,7 +75,7 @@ if (fs.existsSync(path.join(NM, ".pnpm"))) {
 
 // tools：只带用户用得到的
 fs.mkdirSync(path.join(OUT, "tools"), { recursive: true });
-for (const f of ["preflight.mjs", "make-shortcut.ps1", "make-icon.mjs", "make-pixel-icon.mjs", "check-secrets.mjs"]) {
+for (const f of ["preflight.mjs", "make-shortcut.ps1", "make-icon.mjs", "make-pixel-icon.mjs", "make-nian.mjs", "check-secrets.mjs"]) {
   fs.copyFileSync(path.join(ROOT, "tools", f), path.join(OUT, "tools", f));
 }
 
@@ -100,7 +104,8 @@ fs.writeFileSync(path.join(OUT, "workspace", "README.txt"),
 
 // ---- 4. 密钥扫描（发布物里绝不许出现真 Key）----
 console.log("-- scanning release for secrets...");
-const secretRe = /sk-[a-zA-Z0-9_-]{16,}|曾智贤|C:\\Users\\/;
+const OWNER = "\u66FE\u667A\u8D24"; // 姓名转义写，避免扫描器抓到自己
+const secretRe = new RegExp(`sk-[a-zA-Z0-9_-]{16,}|${OWNER}|C:\\\\Users\\\\`);
 let found = [];
 const walk = (dir) => {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {

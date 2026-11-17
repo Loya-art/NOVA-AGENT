@@ -1,10 +1,10 @@
 # NOVA-AGENT 🧧
 
-<p align="center"><img src="assets/icon-pixel.svg" width="128" alt="NOVA Agent 年兽图标"/></p>
+<p align="center"><img src="assets/icon.svg" width="128" alt="NOVA Agent 年兽图标"/></p>
 
 **一个装进 U 盘就能带走的终端 AI Agent。** 插到任何 x64 Windows 电脑上，双击即用——不需要装 Node.js，不需要装 Python，不需要装任何东西。
 
-> 界面为全手绘终端 UI（无 ink/无浏览器内核），默认「年兽红」crimson 主题，16×16 像素舞狮头图标。
+> 界面为全手绘终端 UI（无 ink/无浏览器内核），默认「年兽红」crimson 主题，32×32 像素年兽图标。
 
 ---
 
@@ -40,8 +40,8 @@ npm install        # 或 pnpm install
 node ui/build.mjs  # 打包 TUI
 cd ..
 
-# 生成图标（仓库里只存像素图源与 SVG，ico 本地生成）
-node tools/make-pixel-icon.mjs assets/icon-pixel-map.txt assets/icon
+# 生成图标（仓库里只存 SVG 与像素栅格脚本，ico/png 本地生成）
+node tools/make-nian.mjs 32 assets/icon        # 32×32 像素年兽 → svg + 512png + 多档 ico
 
 runtime\node\bin\node.exe app\ui\bundle.mjs   # 需要 key.txt 或环境变量里的 API Key
 ```

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 680" width="680" height="680">
+  <!-- NOVA Agent · 年兽（Nian beast）图标 · 配色取自界面 crimson 主题 -->
+  <rect x="0" y="0" width="680" height="680" rx="150" fill="#0A0505"/>
+  <!-- 彩色毛丛 -->
+  <g>
+    <circle cx="340" cy="185" r="46" fill="#FFC53D"/>
+    <circle cx="462" cy="228" r="46" fill="#2BD9C8"/>
+    <circle cx="536" cy="330" r="46" fill="#E23A3A"/>
+    <circle cx="536" cy="440" r="46" fill="#FFC53D"/>
+    <circle cx="474" cy="532" r="46" fill="#2BD9C8"/>
+    <circle cx="206" cy="532" r="46" fill="#E23A3A"/>
+    <circle cx="144" cy="440" r="46" fill="#FFC53D"/>
+    <circle cx="144" cy="330" r="46" fill="#2BD9C8"/>
+    <circle cx="218" cy="228" r="46" fill="#E23A3A"/>
+  </g>
+  <!-- 金角一对 -->
+  <path d="M250 250 C228 175 258 130 302 118 C272 158 286 205 296 246 Z" fill="#FFC53D"/>
+  <path d="M430 250 C452 175 422 130 378 118 C408 158 394 205 384 246 Z" fill="#FFC53D"/>
+  <!-- 脸 -->
+  <ellipse cx="340" cy="380" rx="185" ry="165" fill="#FF4646"/>
+  <!-- 额头金印 -->
+  <circle cx="340" cy="272" r="24" fill="#FFC53D"/>
+  <circle cx="340" cy="272" r="12" fill="#E8A33D"/>
+  <!-- 眼睛 -->
+  <ellipse cx="282" cy="352" rx="37" ry="41" fill="#FFFFFF"/>
+  <ellipse cx="398" cy="352" rx="37" ry="41" fill="#FFFFFF"/>
+  <circle cx="290" cy="358" r="16" fill="#14100F"/>
+  <circle cx="390" cy="358" r="16" fill="#14100F"/>
+  <circle cx="296" cy="352" r="6" fill="#FFFFFF"/>
+  <circle cx="396" cy="352" r="6" fill="#FFFFFF"/>
+  <!-- 腮红 -->
+  <circle cx="252" cy="432" r="20" fill="#FF8A80"/>
+  <circle cx="428" cy="432" r="20" fill="#FF8A80"/>
+  <!-- 吻部 -->
+  <ellipse cx="340" cy="462" rx="92" ry="58" fill="#FFE8D9"/>
+  <ellipse cx="340" cy="438" rx="19" ry="12" fill="#14100F"/>
+  <path d="M304 478 Q340 504 376 478" stroke="#14100F" stroke-width="11" fill="none" stroke-linecap="round"/>
+  <path d="M312 478 L322 500 L332 478 Z" fill="#FFFFFF"/>
+  <path d="M348 478 L358 500 L368 478 Z" fill="#FFFFFF"/>
+</svg>
