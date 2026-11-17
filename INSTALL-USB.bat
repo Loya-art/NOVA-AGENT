@@ -60,7 +60,9 @@ if errorlevel 8 (
 )
 
 echo.
-echo  Copy done. Creating desktop shortcut with the Nian icon...
+echo  Copy done. Marking folder icon + creating desktop shortcut...
+attrib +S "%DEST%" >nul 2>&1
+attrib +S +H "%DEST%\desktop.ini" >nul 2>&1
 powershell -NoProfile -ExecutionPolicy Bypass -File "%ROOT%\tools\make-shortcut.ps1" -TargetDir "%DEST%" 2>nul
 if errorlevel 1 echo  [WARN] Shortcut not created - you can still start from %DEST%\NOVA-AGENT.bat
 
