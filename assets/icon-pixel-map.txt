@@ -1,0 +1,27 @@
+# NOVA Agent · 舞狮头像素图标 v2（元气骑士风）
+# 图例: # 字符 = 颜色；M = 红黄绒毛棋盘格（自动）；F = 狮脸（自动描边）
+# K = #1A1013   (描边/嘴)
+# R = #FF4646   (红绒毛)
+# r = #C22B2B   (暗红腮红)
+# Y = #FFC53D   (黄绒毛)
+# y = #E8A33D   (暗黄鼻子)
+# F = #FFD469   (狮脸)
+# W = #FFFFFF   (眼白/牙)
+# G = #2BD9C8   (额头彩点)
+..MM..MMMM..MM..
+.MMMMMMMMMMMMMM.
+.MMMMMMMMMMMMMM.
+.MMMMFFRRFFMMMM.
+.MMMFFFRGFFFMMM.
+.MMFFFFFFFFFFMM.
+.MMFWWWFFWWWFFM.
+.MMFWKWFFWKWFMM.
+.MMFFFFyyFFFFMM.
+.MMFrFFFFFFrFMM.
+.MMFFKWKKWKFFMM.
+.MMFFFKKKKFFFMM.
+.MMFFFFFFFFFFMM.
+.MMFFFFFFFFFFMM.
+.MMMFFFFFFFFMMM.
+.MMMMMMMMMMMMMM.
+..MM..MMMM..MM..

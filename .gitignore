@@ -1,0 +1,30 @@
+# ===== runtime & deps =====
+runtime/
+app/node_modules/
+release/
+dist/
+
+# ===== credentials — 永远不入库 =====
+key.txt
+*.key
+data/vault.enc
+data/lock.json
+
+# ===== personal data（本机/本人数据）=====
+data/
+workspace/
+logs/
+tools/sync-skills.py
+tools/disk-report.ps1
+NOVA-技术笔记.md
+盘体检.bat
+
+# ===== dev & temp =====
+*.log
+.tmp*/
+app/ui/golden-baseline-*.json
+app/ui/bundle.mjs
+app/ui/test-headless.mjs
+app/ui/capture-live.mjs
+Thumbs.db
+desktop.ini
