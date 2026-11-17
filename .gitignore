@@ -21,7 +21,7 @@ NOVA-技术笔记.md
 
 # ===== dev & temp =====
 *.log
-.tmp*/
+.tmp*
 app/ui/golden-baseline-*.json
 app/ui/bundle.mjs
 app/ui/test-headless.mjs

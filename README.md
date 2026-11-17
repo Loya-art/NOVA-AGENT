@@ -34,7 +34,7 @@
 ### 方式三：从源码运行
 
 ```bash
-git clone https://github.com/<you>/NOVA-AGENT.git
+git clone https://github.com/Loya-art/NOVA-AGENT.git
 cd NOVA-AGENT/app
 npm install        # 或 pnpm install
 node ui/build.mjs  # 打包 TUI
